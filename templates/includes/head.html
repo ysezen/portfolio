@@ -1,0 +1,52 @@
+{% load static %}
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta http-equiv="content-language" content="{{ site_language }}"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
+    <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">    
+    <meta name="description" content="{{ site_description }}"/>
+    
+    <meta name="keywords" content="{{ site_keywords }}"/>
+    <meta name="author" content="{{ site_author }}"/>
+    <meta name="generator" content="{{ site_generator}}"/>
+    <meta name="rating" content="{{ site_rating }}"/>
+    <meta name="revisit-after" content="{{ site_revisit_after }}"/>
+    <meta name="language" content="{{ site_language }}"/>
+    <meta name="distribution" content="{{ site_distribution }}"/>
+    
+    <meta property="og:title" content="{{ site_title }}"/>
+    <meta property="og:description" content="{{ site_description }}"/>
+    <meta property="og:type" content="website"/>    
+    <meta property="og:url" content="{{ site_url }}"/>
+    <meta property="og:image" content="{% static 'img/favicon.ico' %}"/>
+    <meta property="og:site_name" content="{{ site_title }}"/>
+    <meta property="og:locale" content="tr_TR">
+    
+    <title>{{ site_title }}</title>
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+
+    <!-- Google Font-->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300italic,300,100italic,100,400italic,500,500italic,700,900,900italic,700italic%7COswald:400,300,700'
+          rel='stylesheet' type='text/css'>
+    <!-- Design Style -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/scroll.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <!-- Icon -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.css' %}"/>
+    <!-- Portfolio Thumbnail / Slider -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/portfolio.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/carousel.css' %}">
+    <!-- Responsive -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}"/>
+    <!-- Pie Chart / Skills -->
+    <script type="text/javascript" src="{% static 'js/jquery-2.0.3.min.js' %}"></script>
+    <!-- Send Email -->
+    {% comment %}<script type="text/javascript" src="{% static 'js/sendemail.js' %}"></script>{% endcomment %}
+    <!-- Progressbar / Skills-->
+    <script type="text/javascript" src="{% static 'js/progressbar.js' %}"></script>
+    <!-- Portfolio-->
+    <script src="{% static 'js/modernizr.custom.js' %}"></script>    
+</head>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<HTML lang="en">
+
+{% include 'includes/head.html' %}
+
+<body>
+
+<div id="container" class="container">
+    {% include 'includes/header.html' %}
+    {% block container %}
+    {% endblock %}
+</div>
+
+{% include 'includes/scripts.html' %}
+
+{% block extra_script %}
+{% endblock %}
+
+</body>
+</HTML>

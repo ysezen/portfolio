@@ -1,0 +1,44 @@
+name: portfolio
+services:
+  postgres:
+    container_name: cnt_postgres
+    hostname: cnt_postgres
+    image: postgres:16-alpine
+    env_file:
+      - portfolio/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    command: -p 5432
+  app:
+    container_name: cnt_portfolio
+    hostname: cnt_portfolio
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    env_file:
+      - portfolio/.env
+    volumes:
+        - .:/srv/app
+        - static-data:/srv/app/staticfiles
+    ports:
+      - "0.0.0.0:8080:8000"
+    command: gunicorn portfolio.wsgi:application --bind 0.0.0.0:8000
+
+  nginx:
+    container_name: cnt_nginx
+    hostname: cnt_nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+volumes:
+  postgresql-data:
+  static-data:

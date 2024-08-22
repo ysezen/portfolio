@@ -1,0 +1,34 @@
+{% load static %}
+
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/head.min.js' %}"></script>
+<!-- Portfolio Thumbnail -->
+<script type="text/javascript" src="{% static 'js/imagesloaded.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/masonry.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/class_helper.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/grid_gallery.js' %}"></script>
+<!-- Portfolio Grid -->
+<script>
+    new CBPGridGallery(document.getElementById('grid-gallery'));
+</script>
+<!-- Portfolio Slider-->
+<script type="text/javascript" src="{% static 'js/carousel.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.easypiechart.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/text.rotator.js' %}"></script>
+<!-- Page Scrolling -->
+<script>
+    head.js(
+        {mousewheel: "{%static 'js/jquery.mousewheel.js' %}"},
+        {mwheelIntent: "{%static 'js/mwheelIntent.js' %}"},
+        {jScrollPane: "{%static 'js/jquery.jscrollpane.min.js' %}"},
+        {history: "{%static 'js/jquery.history.js' %}"},
+        {stringLib: "{%static 'js/core.string.js' %}"},
+        {easing: "{%static 'js/jquery.easing.1.3.js' %}"},
+        {smartresize: "{%static 'js/jquery.smartresize.js' %}"},
+        {page: "{%static 'js/jquery.page.js' %}"}
+    );
+</script>
+<!-- Fit Video -->
+<script type="text/javascript" src="{% static 'js/jquery.fitvids.js' %}"></script>
+<!-- All Javascript Component-->
+<script src="{% static 'js/settings.js' %}"></script>
