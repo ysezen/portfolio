@@ -146,7 +146,7 @@ class SocialMediaAdmin(admin.ModelAdmin):
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'order', 'slug', 'button_text', 'file', 'description', 'updated_date', 'created_date']
+    list_display = ['id', 'cid', 'order', 'type', 'slug', 'button_text', 'file', 'description', 'updated_date', 'created_date']
     search_fields = ['order', 'slug', 'button_text', 'file', 'description']
     list_filter = ['order', 'slug', 'button_text', 'file', 'description']
     list_editable = ['order', 'slug', 'button_text', 'file', 'description']

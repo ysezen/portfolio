@@ -27,18 +27,23 @@
                             <ul>
                                 <li>
                                     Name: {{ customer.firstname }} {{ customer.middlename }} {{ customer.lastname }}</li>
-{#                                <li>Email: <a href="mailto:{{ customer.email }}">{{ customer.email }}</a></li>#}
-{#                                <li>Phone: <a href="tel:{{ customer.phone }}">{{ customer.phone_prettify }}</a></li>#}
-{#                                <li>Date of birth: {{ customer.birthdate|date:"d.m.Y" }}</li>#}
+                                {#                                <li>Email: <a href="mailto:{{ customer.email }}">{{ customer.email }}</a></li>#}
+                                {#                                <li>Phone: <a href="tel:{{ customer.phone }}">{{ customer.phone_prettify }}</a></li>#}
+                                {#                                <li>Date of birth: {{ customer.birthdate|date:"d.m.Y" }}</li>#}
                                 <li>Address: <a
                                         href="https://www.google.com/maps/search/{{ customer.address_navigate }}"
                                         target="_blank">{{ customer.address_navigate }}</a></li>
-{#                                <li>Nationality: {{ customer.nationality }}</li>#}
+                                {#                                <li>Nationality: {{ customer.nationality }}</li>#}
                             </ul>
                             <h3>Professional Profile</h3>
                             <p>{{ introduction.about|linebreaksbr }}<br>
                             </p>
-                            <a href="#" class="button">Download resume as PDF format</a>
+                            {% if resume %}
+                                <a href="{{ resume.file.url }}" target="_blank" class="button">Download resume as PDF
+                                    format</a>
+                            {% else %}
+                                <p>No resume available.</p>
+                            {% endif %}
                             <img src="{% static 'img/signature_new.png' %}" class="signature" alt=""/>
                             <img src="{% static 'img/qrcode.png' %}" class="signature" alt=""/>
                         </div>
@@ -318,12 +323,12 @@
                                                             target="_blank">{{ customer.address_navigate }}</a>
                                                 </div>
                                             </div>
-                                            <div class="contact-text">
-                                                <div class="col-2 icon-block phone"><i class="fa fa-phone"></i></div>
-                                                <div class="flot-left"><strong>Phone</strong><br>
-                                                    <a href="tel:{{ customer.phone }}">{{ customer.phone_prettify }}</a>
-                                                </div>
-                                            </div>
+                                            {#                                            <div class="contact-text">#}
+                                            {#                                                <div class="col-2 icon-block phone"><i class="fa fa-phone"></i></div>#}
+                                            {#                                                <div class="flot-left"><strong>Phone</strong><br>#}
+                                            {#                                                    <a href="tel:{{ customer.phone }}">{{ customer.phone_prettify }}</a>#}
+                                            {#                                                </div>#}
+                                            {#                                            </div>#}
                                             <div class="contact-text">
                                                 <div class="col-2 icon-block email"><i class="fa fa-envelope"></i></div>
                                                 <div class="flot-left"><strong>Email</strong><br>
@@ -348,8 +353,8 @@
                                 <div class="row">
                                     <div class="contact-form">
                                         <h3>Drop Me a Line</h3>
-                                        <form id="form1" name="form1" action="{% url 'submit_contact_form' %}"
-                                              method="post">{% csrf_token %}
+                                        <form id="form1" name="form1" action="{% url 'submit_contact_form' %}" method="post">
+                                            {% csrf_token %}
                                             <input name="name" type="text" id="name" placeholder="Your Name..."/>
                                             <input name="email" type="text" id="email" placeholder="Your Email..."/>
                                             <textarea name="message" id="message" cols="45" rows="5"
@@ -361,7 +366,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>    
+                    </div>
                 </article>
 
                 <!-- Introduction -->
@@ -386,11 +391,19 @@
         </div>
         <!-- content-scroller -->
     </div>
-     
+
 {% endblock %}
 
 
-
+{% block extra_script %}
+    <script>
+        // Add event listener for the 'show-toast' custom event
+        document.addEventListener('show-toast', event => {
+            const {level, message, title} = event.detail;
+            toastr[level](message, title);
+        });
+    </script>
+{% endblock %}
 
 {#Use another time to add the portfolio section#}
 {% comment %}<article class="content portfolio white-bg" id="chapterportfolio">

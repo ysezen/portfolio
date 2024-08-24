@@ -575,10 +575,23 @@ class SocialMedia(AbstractModel):
 
 
 class Document(AbstractModel):
+    cid = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        default=1,
+        db_comment='This column stores the customer id.'
+    )
     order = models.IntegerField(
         default=0,
         verbose_name='Order',
         help_text='This is the order of the document.',
+    )
+    type = models.CharField(
+        default='',
+        max_length=254,
+        blank=True,
+        verbose_name='Document Type',
+        help_text='This is the type of the document.',
     )
     slug = models.SlugField(
         default='',

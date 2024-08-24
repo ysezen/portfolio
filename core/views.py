@@ -1,43 +1,46 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .models import Customer, Introductions, GeneralSetting, ImageSetting, Knowledge, Certification, Experience, \
     Education, Document, SocialMedia, Message
 from .forms import ContactFormValidate
+from .utils import OperationResult
 
-
-# Create your views here.
 
 def submit_contact_form(request):
-    if request.POST:
+    result = OperationResult()
+
+    if request.method != "POST":
+        result.set_error("Request method is not valid", 405)
+        return JsonResponse(result.to_dict(), status=result.http_status)
+
+    try:
         contact_form_validate = ContactFormValidate(request.POST or None)
-        if contact_form_validate.is_valid():
-            name = request.POST.get('name')
-            email = request.POST.get('email')
-            message = request.POST.get('message')
+        if not contact_form_validate.is_valid():
+            result.set_error("Contact form is not valid", 400)
+            return JsonResponse(result.to_dict(), status=result.http_status)
 
-            Message.objects.create(
-                name=name,
-                email=email,
-                message=message
-            )
+        name = contact_form_validate.cleaned_data.get('name')
+        email = contact_form_validate.cleaned_data.get('email')
+        message = contact_form_validate.cleaned_data.get('message')
 
-            contact_form_validate.sends_email()
+        Message.objects.create(
+            name=name,
+            email=email,
+            message=message
+        )
 
-            success = True
-            message = 'Your message has been sent successfully.'
-        else:
-            success = False
-            message = 'Contact form is not valid.'
+        email_result = contact_form_validate.sends_email()
 
-    else:
-        success = False
-        message = 'Request method is not valid.'
+        if email_result.http_status != 200:
+            result.set_error("Failed to send email", 500)
 
-    context = {
-        'success': success,
-        'message': message
-    }
-    return JsonResponse(context)
+        result.set_data("Your message has been sent successfully.")
+        return JsonResponse(result.to_dict(), status=result.http_status)
+
+    except Exception as e:
+        result.set_error("An unexpected error occurred", 500)
+        return JsonResponse(result.to_dict(), status=result.http_status)
 
 
 def get_general_settings(parameter):
@@ -105,6 +108,14 @@ def get_customer_social_media(cid):
     try:
         obj = SocialMedia.objects.filter(cid_id=cid)
     except SocialMedia.DoesNotExist:
+        obj = ''
+    return obj
+
+
+def get_customer_resume(cid):
+    try:
+        obj = Document.objects.get(cid_id=cid, type='resume')
+    except Document.DoesNotExist:
         obj = ''
     return obj
 
@@ -177,6 +188,9 @@ def index(request):
     # Social Media
     social_medias = get_customer_social_media(1)
 
+    # Resume
+    resume = get_customer_resume(1)
+
     # Contact Form Validate
     contact_form_validate = ContactFormValidate()
 
@@ -218,6 +232,9 @@ def index(request):
 
         # Social Media
         'social_medias': social_medias,
+
+        # Resume
+        'resume': resume,
 
         # Contact Form Validate
         'contact_form_validate': contact_form_validate,

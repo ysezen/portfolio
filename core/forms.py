@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.core.mail import EmailMessage
+from .utils import OperationResult
 
 
 class ContactFormValidate(forms.Form):
@@ -18,6 +19,7 @@ class ContactFormValidate(forms.Form):
     )
 
     def sends_email(self):
+        result = OperationResult()
         if self.is_valid():
             name = self.cleaned_data['name']
             email = self.cleaned_data['email']
@@ -32,6 +34,11 @@ class ContactFormValidate(forms.Form):
                 reply_to=[email],
             )
             email.send()
+            return result
+        else:
+            result.set_error("Contact form is not valid", 400)
+            return result
+
 
 
 

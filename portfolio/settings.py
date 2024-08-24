@@ -117,12 +117,12 @@ USE_TZ = True
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#
 
 if DEBUG:
+
     STATIC_URL = '/static/'
     MEDIA_URL = '/media/'
-    DOCUMENTS_URL = '/documents/'
     IMAGE_SETTINGS_URL = '/image_settings/'
-
     STATIC_ROOT = BASE_DIR / 'staticfiles'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 else:
 
@@ -155,10 +155,18 @@ else:
         "CacheControl": "max-age=2592000",
     }
 
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email settings
+vars().update(env.email_url())
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
