@@ -1,5 +1,6 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from .models import Customer, Introductions, GeneralSetting, ImageSetting, Knowledge, Certification, Experience, \
     Education, Document, SocialMedia, Message
@@ -12,13 +13,13 @@ def submit_contact_form(request):
 
     if request.method != "POST":
         result.set_error("Request method is not valid", 405)
-        return JsonResponse(result.to_dict(), status=result.http_status)
-
+        return render(request, 'index.html', {'result': result})
     try:
-        contact_form_validate = ContactFormValidate(request.POST or None)
+        contact_form_validate = ContactFormValidate(request.POST)
         if not contact_form_validate.is_valid():
             result.set_error("Contact form is not valid", 400)
-            return JsonResponse(result.to_dict(), status=result.http_status)
+            messages.error(request, result.message)
+            return render(request, 'index.html', {'result': result})
 
         name = contact_form_validate.cleaned_data.get('name')
         email = contact_form_validate.cleaned_data.get('email')
@@ -34,13 +35,17 @@ def submit_contact_form(request):
 
         if email_result.http_status != 200:
             result.set_error("Failed to send email", 500)
-
-        result.set_data("Your message has been sent successfully.")
-        return JsonResponse(result.to_dict(), status=result.http_status)
+            messages.error(request, "Failed to send email")
+        else:
+            result.set_data("Your message has been sent successfully.")
+            messages.success(request, "Your message has been sent successfully.")
 
     except Exception as e:
         result.set_error("An unexpected error occurred", 500)
-        return JsonResponse(result.to_dict(), status=result.http_status)
+        messages.error(request, "An unexpected error occurred")
+
+    # return render(request, 'index.html', {'result': result})
+    return JsonResponse(result.to_dict())
 
 
 def get_general_settings(parameter):

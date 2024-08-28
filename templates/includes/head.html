@@ -26,11 +26,7 @@
     <meta property="og:locale" content="tr_TR">
 
     <title>{{ site_title }}</title>
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
-    <!-- Toast CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">   
 
     <!-- Google Font-->
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,300italic,300,100italic,100,400italic,500,500italic,700,900,900italic,700italic%7COswald:400,300,700'
@@ -46,11 +42,12 @@
     <!-- Responsive -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}"/>
     <!-- Pie Chart / Skills -->
-    <script type="text/javascript" src="{% static 'js/jquery-2.0.3.min.js' %}"></script>
-    <!-- Send Email -->
-    {% comment %}<script type="text/javascript" src="{% static 'js/sendemail.js' %}"></script>{% endcomment %}
-    <!-- Progressbar / Skills-->
+    <script type="text/javascript" src="{% static 'js/jquery-2.0.3.min.js' %}"></script>    
     <script type="text/javascript" src="{% static 'js/progressbar.js' %}"></script>
     <!-- Portfolio-->
     <script src="{% static 'js/modernizr.custom.js' %}"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
 </head>

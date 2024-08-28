@@ -353,7 +353,8 @@
                                 <div class="row">
                                     <div class="contact-form">
                                         <h3>Drop Me a Line</h3>
-                                        <form id="form1" name="form1" action="{% url 'submit_contact_form' %}" method="post">
+                                        <form id="form1" name="form1"
+                                              method="post">
                                             {% csrf_token %}
                                             <input name="name" type="text" id="name" placeholder="Your Name..."/>
                                             <input name="email" type="text" id="email" placeholder="Your Email..."/>
@@ -392,197 +393,89 @@
         <!-- content-scroller -->
     </div>
 
+    <div id="message-container">
+    </div>
+    <div class="loading-container">
+        <div class="lds-facebook">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
 {% endblock %}
 
 
 {% block extra_script %}
     <script>
-        // Add event listener for the 'show-toast' custom event
-        document.addEventListener('show-toast', event => {
-            const {level, message, title} = event.detail;
-            toastr[level](message, title);
-        });
+        const form = document.querySelector('#form1');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            form.querySelector('#button').disabled = true; // Disable the submit button
+
+            var formData = new FormData(event.target);
+            showSpinner(); // Show the spinner when starting the request
+
+            fetch('{% url "submit_contact_form" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',  // Indicate that this is an AJAX request
+                    'X-CSRFToken': '{{ csrf_token }}'     // Include the CSRF token for security
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // If the response is successful, reload the messages
+                        return response.json(); // Get the response as json
+                    } else {
+                        throw new Error('Something went wrong'); // Handle errors
+                    }
+                })
+                .then(data => {
+                    // Update the message container with the new messages
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = ''; // Clear previous messages
+                    messageContainer.innerHTML = `<div class="alert alert-success">${data.data}</div>`; // Success message
+                    document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
+                    setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
+                    document.getElementById('form1').reset(); // Reset the form                    
+                })
+                .catch(() => {
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = `<div class="alert alert-danger">An unexpected error occurred.</div>`; // Display generic error message
+                    document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
+                    setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
+
+                });
+        });        
+
+        // Function to automatically fade out the toast
+        function fadeOutToast() {
+            let messageContainer = document.getElementById('message-container');
+            const alerts = messageContainer.getElementsByClassName('alert');
+            for (let alert of alerts) {
+                alert.classList.add('fade-out'); // Add fade-out class
+                setTimeout(() => {
+                    alert.remove(); // Remove the alert after fading out
+                }, 500); // Match this duration with the CSS transition duration
+            }
+            document.getElementById('form1').querySelector('#button').disabled = false; // Enable the submit button
+            hideSpinner(); // Hide the spinner after the request is completed
+        }
+
+        // Call fadeOutToast after a delay (e.g., 3 seconds)
+        setTimeout(fadeOutToast, 3000);
+
+        // Function to show the loading spinner
+        function showSpinner() {
+            document.querySelector('.loading-container').style.display = 'block';
+        }
+
+        // Function to hide the loading spinner
+        function hideSpinner() {
+            document.querySelector('.loading-container').style.display = 'none';
+            //değişiklik gerekiyor
+        }
     </script>
 {% endblock %}
-
-{#Use another time to add the portfolio section#}
-{% comment %}<article class="content portfolio white-bg" id="chapterportfolio">
-                    <div class="inner">
-                        <h2>Portfolio</h2>
-                        <div class="title-divider"></div>
-                        <h3>Our public portfolio</h3>
-                        <p>{{ introduction.portfolio }}</p>
-                        <div class="portfolio-con">
-                            <div class="container-sub margin-top50">
-                                <div class="row">
-                                    <div id="grid-gallery" class="grid-gallery">
-                                        <section class="grid-wrap">
-                                            <ul class="grid">
-                                                <li>
-                                                    <figure><img src="{% static 'img/work1.jpg' %}" alt=""/>
-                                                        <figcaption>
-                                                            <div class="figcaption-details"><img
-                                                                    src="{% static 'img/icon-plus.png' %}"
-                                                                    height="82" width="82"
-                                                                    alt=""/>
-                                                                <h3>The Flavour Restaurant</h3>
-                                                                <span>Website Design & Development</span></div>
-                                                        </figcaption>
-                                                    </figure>
-                                                </li>
-                                                <li>
-                                                    <figure><img src="{% static 'img/work2.jpg' %}" alt=""/>
-                                                        <figcaption>
-                                                            <div class="figcaption-details"><img
-                                                                    src="{% static 'img/icon-plus.png' %}"
-                                                                    height="82" width="82"
-                                                                    alt=""/>
-                                                                <h3>Herbal Beauty Salon</h3>
-                                                                <span>Photography</span></div>
-                                                        </figcaption>
-                                                    </figure>
-                                                </li>
-                                                <li>
-                                                    <figure><img src="{% static 'img/work3.jpg' %}" alt=""/>
-                                                        <figcaption>
-                                                            <div class="figcaption-details"><img
-                                                                    src="{% static 'img/icon-plus.png' %}"
-                                                                    height="82" width="82"
-                                                                    alt=""/>
-                                                                <h3>Kayra Modelleri</h3>
-                                                                <span>Branding and Identity</span></div>
-                                                        </figcaption>
-                                                    </figure>
-                                                </li>
-                                                <li>
-                                                    <figure><img src="{% static 'img/work4.jpg' %}" alt=""/>
-                                                        <figcaption>
-                                                            <div class="figcaption-details"><img
-                                                                    src="{% static 'img/icon-plus.png' %}"
-                                                                    height="82" width="82"
-                                                                    alt=""/>
-                                                                <h3>Fashion and You</h3>
-                                                                <span>APPS and Web Design</span></div>
-                                                        </figcaption>
-                                                    </figure>
-                                                </li>
-                                                <li>
-                                                    <figure><img src="{% static 'img/work5.jpg' %}" alt=""/>
-                                                        <figcaption>
-                                                            <div class="figcaption-details"><img
-                                                                    src="{% static 'img/icon-plus.png' %}"
-                                                                    height="82" width="82"
-                                                                    alt=""/>
-                                                                <h3>Whole Food Flour</h3>
-                                                                <span>Branding and Identity</span></div>
-                                                        </figcaption>
-                                                    </figure>
-                                                </li>
-                                            </ul>
-                                        </section>
-
-                                        <!-- Lightbox Popup -->
-                                        <section class="slideshow">
-                                            <ul>
-                                                <li>
-                                                    <figure>
-                                                        <figcaption>
-                                                            <h3>The Flavour Restaurant</h3>
-                                                            <span>Website Design & Development</span>
-                                                            <p>Kale chips lomo biodiesel stumptown Godard Tumblr,
-                                                                mustache sriracha tattooed cray aute slow-carb placeat
-                                                                delectus. Letterpress asymmetrical fanny pack art party
-                                                                est pour-over skateboard anim quis, ullamco craft
-                                                                beer.</p>
-                                                        </figcaption>
-                                                        <div id="owl-demo1" class="owl-carousel">
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                        </div>
-                                                    </figure>
-                                                </li>
-                                                <li>
-                                                    <figure>
-                                                        <figcaption>
-                                                            <h3>Herbal Beauty Salon</h3>
-                                                            <span>Photography</span>
-                                                            <p>Kale chips lomo biodiesel stumptown Godard Tumblr,
-                                                                mustache sriracha tattooed cray aute slow-carb placeat
-                                                                delectus. Letterpress asymmetrical fanny pack art party
-                                                                est pour-over skateboard anim quis, ullamco craft
-                                                                beer.</p>
-                                                        </figcaption>
-                                                        <img src="http://placehold.it/700x475" alt=""/></figure>
-                                                </li>
-                                                <li>
-                                                    <figure>
-                                                        <figcaption>
-                                                            <h3>Kayra Modelleri</h3>
-                                                            <span>Branding and Identity</span>
-                                                            <p>Kale chips lomo biodiesel stumptown Godard Tumblr,
-                                                                mustache sriracha tattooed cray aute slow-carb placeat
-                                                                delectus. Letterpress asymmetrical fanny pack art party
-                                                                est pour-over skateboard anim quis, ullamco craft
-                                                                beer.</p>
-                                                        </figcaption>
-                                                        <div id="owl-demo2" class="owl-carousel">
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                            <div class="item"><img src="http://placehold.it/700x475"
-                                                                                   alt=""/></div>
-                                                        </div>
-                                                    </figure>
-                                                </li>
-                                                <li>
-                                                    <figure>
-                                                        <figcaption>
-                                                            <h3>Fashion and You</h3>
-                                                            <span>APPS and Web Design</span>
-                                                            <p>Kale chips lomo biodiesel stumptown Godard Tumblr,
-                                                                mustache sriracha tattooed cray aute slow-carb placeat
-                                                                delectus. Letterpress asymmetrical fanny pack art party
-                                                                est pour-over skateboard anim quis, ullamco craft
-                                                                beer.</p>
-                                                        </figcaption>
-                                                        <iframe width="854" height="480"
-                                                                src="//www.youtube.com/embed/ZwzY1o_hB5Y"
-                                                                frameborder="0" allowfullscreen></iframe>
-                                                    </figure>
-                                                </li>
-                                                <li>
-                                                    <figure>
-                                                        <figcaption>
-                                                            <h3>Whole Food Flour</h3>
-                                                            <span>Branding and Identity</span>
-                                                            <p>Kale chips lomo biodiesel stumptown Godard Tumblr,
-                                                                mustache sriracha tattooed cray aute slow-carb placeat
-                                                                delectus. Letterpress asymmetrical fanny pack art party
-                                                                est pour-over skateboard anim quis, ullamco craft
-                                                                beer.</p>
-                                                        </figcaption>
-                                                        <img src="http://placehold.it/700x475" alt=""/></figure>
-                                                </li>
-                                            </ul>
-                                            <nav><span class="fa nav-prev"></span> <span class="fa nav-next"></span>
-                                                <span class="fa nav-close"></span></nav>
-                                        </section>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>{% endcomment %}

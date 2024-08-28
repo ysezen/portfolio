@@ -18,11 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from core.views import submit_contact_form
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('submit_contact_form', submit_contact_form, name='submit_contact_form'),
     path('', include('core.urls')),
 ]
 
