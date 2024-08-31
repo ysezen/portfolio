@@ -441,7 +441,7 @@
                         messageContainer.innerHTML = ''; // Clear previous messages
                         messageContainer.innerHTML = `<div class="alert alert-success">${data.data}</div>`; // Success message
                         document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
-                        //setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
+                        setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
                         document.getElementById('form1').reset(); // Reset the form
                     } else {
                         throw new Error(data.message); // Handle errors
@@ -452,7 +452,7 @@
                     const messageContainer = document.getElementById('message-container');
                     messageContainer.innerHTML = `<div class="alert alert-danger">${error.message}</div>`; // Display generic error message
                     document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
-                    //setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
+                    setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
                 });
         });
 
