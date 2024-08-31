@@ -25,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -169,4 +170,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 vars().update(env.email_url())
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+#EMAIL_USE_TLS = env('EMAIL_USE_TLS')

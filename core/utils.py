@@ -11,6 +11,12 @@ class OperationResult:
         self.message = message
         self.data = None
 
+    def set_success(self, message, http_status=200):
+        self.status = True
+        self.http_status = http_status
+        self.message = message
+        self.data = None
+
     def set_data(self, data):
         self.data = data
 

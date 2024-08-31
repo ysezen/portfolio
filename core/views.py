@@ -1,4 +1,3 @@
-import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
@@ -34,15 +33,20 @@ def submit_contact_form(request):
         email_result = contact_form_validate.sends_email()
 
         if email_result.http_status != 200:
-            result.set_error("Failed to send email", 500)
-            messages.error(request, "Failed to send email")
+            result.set_error(email_result.message)
+            messages.error(request, email_result.message)
         else:
             result.set_data("Your message has been sent successfully.")
             messages.success(request, "Your message has been sent successfully.")
 
     except Exception as e:
-        result.set_error("An unexpected error occurred", 500)
-        messages.error(request, "An unexpected error occurred")
+        result.set_error('An unexpected error occurred', 500)
+        result.set_data(str(e))
+        # Capture the traceback to get the line number
+        # tb_str = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+        # line_number = tb_str[-1].split(",")[1].strip().split(" ")[-1]  # Extract line number from traceback
+        # result.set_error(f"An unexpected error occurred at line {line_number}: {str(e)}", 500)
+        # messages.error(request, f"An unexpected error occurred at line {line_number}.")
 
     # return render(request, 'index.html', {'result': result})
     return JsonResponse(result.to_dict())

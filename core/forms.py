@@ -27,14 +27,19 @@ class ContactFormValidate(forms.Form):
             message = self.cleaned_data['message']
             message_context = f'Message Received.\n\nName: {name}\nEmail: {email}\nSubject: {subject}\nMessage: {message}'
 
-            email = EmailMessage(
-                subject,
-                message_context,
-                to=[settings.DEFAULT_FROM_EMAIL],
-                reply_to=[email],
-            )
-            email.send()
-            return result
+            try:
+                email = EmailMessage(
+                    subject,
+                    message_context,
+                    to=[settings.DEFAULT_FROM_EMAIL],
+                    reply_to=[email],
+                )
+                email.send()
+
+                return result
+            except Exception as e:
+                result.set_error(str(e), 500)
+                return result
         else:
             result.set_error("Contact form is not valid", 400)
             return result

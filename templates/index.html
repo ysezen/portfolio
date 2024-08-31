@@ -429,24 +429,30 @@
                         // If the response is successful, reload the messages
                         return response.json(); // Get the response as json
                     } else {
-                        throw new Error('Something went wrong'); // Handle errors
+                        return response.json().then(data => {
+                            throw new Error(data.message);
+                        });
                     }
                 })
                 .then(data => {
                     // Update the message container with the new messages
-                    const messageContainer = document.getElementById('message-container');
-                    messageContainer.innerHTML = ''; // Clear previous messages
-                    messageContainer.innerHTML = `<div class="alert alert-success">${data.data}</div>`; // Success message
-                    document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
-                    setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
-                    document.getElementById('form1').reset(); // Reset the form                    
-                })
-                .catch(() => {
-                    const messageContainer = document.getElementById('message-container');
-                    messageContainer.innerHTML = `<div class="alert alert-danger">An unexpected error occurred.</div>`; // Display generic error message
-                    document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
-                    setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
+                    if (data.status) {
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = ''; // Clear previous messages
+                        messageContainer.innerHTML = `<div class="alert alert-success">${data.data}</div>`; // Success message
+                        document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
+                        //setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
+                        document.getElementById('form1').reset(); // Reset the form
+                    } else {
+                        throw new Error(data.message); // Handle errors
 
+                    }
+                })
+                .catch(error => {
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = `<div class="alert alert-danger">${error.message}</div>`; // Display generic error message
+                    document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
+                    //setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
                 });
         });
 
