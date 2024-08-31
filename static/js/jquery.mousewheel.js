@@ -1,7 +1,7 @@
 
 
 (function($) {
-"use strict"; 
+
 var types = ['DOMMouseScroll', 'mousewheel'];
 
 if ($.event.fixHooks) {
@@ -68,7 +68,7 @@ function handler(event) {
     // Add event and delta to the front of the arguments
     args.unshift(event, delta, deltaX, deltaY);
     
-    return ($.event.dispatch || $.event.handle).apply(this, args);
+    return $.event.dispatch.apply(this, args);
 }
 
 })(jQuery);

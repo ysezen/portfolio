@@ -1,12 +1,11 @@
 {% load static %}
 
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/head.min.js' %}"></script>
 <!-- Portfolio Thumbnail -->
 <script type="text/javascript" src="{% static 'js/imagesloaded.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/masonry.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/class_helper.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/grid_gallery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/grid_gallery.js' %}" defer></script>
 <!-- Portfolio Grid -->
 <script>
     new CBPGridGallery(document.getElementById('grid-gallery'));

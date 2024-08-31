@@ -1,5 +1,5 @@
 (function( window, $, undefined ) {
-"use strict"; 
+
 	var $event = $.event, resizeTimeout;
 
 	$event.special.smartresize 	= {
@@ -20,7 +20,7 @@
 
 			if ( resizeTimeout ) { clearTimeout( resizeTimeout ); }
 			resizeTimeout = setTimeout(function() {
-				jQuery.event.handle.apply( context, args );
+				jQuery.event.dispatch.apply( context, args );
 			}, execAsap === "execAsap"? 0 : 50 );
 		}
 	};

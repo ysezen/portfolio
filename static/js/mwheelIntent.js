@@ -51,7 +51,7 @@ $.event.special.mwheelIntent = {
 				minDif = 3;
 			}, 1500);
 			e = $.extend({}, e, {type: 'mwheelIntent'});
-            return $.event.handle.apply(this, arguments);
+            return $.event.dispatch.apply(this, arguments);
 		}
     }
 };
@@ -59,7 +59,7 @@ $.fn.extend({
 	mwheelIntent: function(fn) {
 		return fn ? this.bind("mwheelIntent", fn) : this.trigger("mwheelIntent");
 	},
-	
+
 	unmwheelIntent: function(fn) {
 		return this.unbind("mwheelIntent", fn);
 	}
