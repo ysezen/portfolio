@@ -38,7 +38,7 @@
                             <p>{{ introduction.about|linebreaksbr }}<br>
                             </p>
                             {% if resume %}
-                                <a href="{{ resume.file.url }}" target="_blank" class="button">Download resume as PDF
+                                <a href="{{ resume.slug }}" target="_blank" class="button">Download resume as PDF
                                     format</a>
                             {% else %}
                                 <p>No resume available.</p>
@@ -412,6 +412,43 @@
         form.addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent the default form submission
             form.querySelector('#button').disabled = true; // Disable the submit button
+            
+            const name = form.querySelector('#name').value.trim();
+            const email = form.querySelector('#email').value.trim();
+            const message = form.querySelector('#message').value.trim();
+            
+            let isValid = true;
+            let errorMessage = 'Lütfen Tüm Alanları Doldurunuz.<br>';
+            
+            if (name.length < 3) {
+                isValid = false;
+                errorMessage += 'İsminiz en az 3 karakter olmalıdır.<br>';
+            }
+            
+            if (!email) {
+        isValid = false;
+        errorMessage += 'Email alanı boş olamaz.<br>';
+    } else if (!(/(.+)@(.+){2,}\.(.+){2,}/.test(email))) {
+        isValid = false;
+        errorMessage += 'Geçersiz email formatı.<br>';
+    }
+
+    if (message.length < 5) {
+        isValid = false;
+        errorMessage += 'Mesaj en az 5 karakter olmalıdır.<br>';
+    }
+
+    if (!isValid) {             
+        
+        const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`; // Display generic error message
+                    document.getElementById('message-container').addEventListener('click', fadeOutToast); // Add event listener to fade out the toast
+                    setTimeout(fadeOutToast, 3000); // Call fadeOutToast after a delay (e.g., 3 seconds)
+        
+        form.querySelector('#button').disabled = false; // Butonu tekrar etkinleştir
+        return; // Kontrol başarısızsa işlemi durdur
+    }
+
 
             var formData = new FormData(event.target);
             showSpinner(); // Show the spinner when starting the request
