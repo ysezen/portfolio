@@ -356,10 +356,10 @@
                                         <form id="form1" name="form1"
                                               method="post">
                                             {% csrf_token %}
-                                            <input name="name" type="text" id="name" placeholder="Your Name..."/>
-                                            <input name="email" type="text" id="email" placeholder="Your Email..."/>
+                                            <input name="name" type="text" id="name" placeholder="Your Name..." required/>
+                                            <input name="email" type="text" id="email" placeholder="Your Email..." required/>
                                             <textarea name="message" id="message" cols="45" rows="5"
-                                                      placeholder="Your Message..."></textarea>
+                                                      placeholder="Your Message..." required></textarea>
                                             <input type="submit" name="button" id="button" value="say hello!">
                                             <div id="successmsg"></div>
                                         </form>
