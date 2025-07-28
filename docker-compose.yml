@@ -38,7 +38,7 @@ services:
     depends_on:
       - app
     ports:
-      - "8002:80"
+      - "8001:80"
 volumes:
   postgresql-data:
   static-data:
