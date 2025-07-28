@@ -42,3 +42,5 @@ services:
 volumes:
   postgresql-data:
   static-data:
+
+  #deneme
