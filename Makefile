@@ -30,5 +30,8 @@ logDb:
 logNginx:
 	 docker compose logs -f nginx
 
+res:
+	docker compose restart app
+
 
 PHONY: m1 m2 cs build builds logApp logDb logApp logNginx stop down

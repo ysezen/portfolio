@@ -41,4 +41,7 @@ services:
       - "8002:80"
 volumes:
   postgresql-data:
+    external: true
+    name: postgresql-data
   static-data:
+
