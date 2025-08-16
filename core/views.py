@@ -1,8 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponse
-from .models import Customer, Introductions, GeneralSetting, ImageSetting, Knowledge, Certification, Experience, \
-    Education, Document, SocialMedia, Message
+from django.http import JsonResponse
+from .models import (
+    Customer,
+    Introductions,
+    GeneralSetting,
+    ImageSetting,
+    Knowledge,
+    Certification,
+    Experience,
+    Education,
+    Document,
+    SocialMedia,
+    Message,
+)
 from .forms import ContactFormValidate
 from .utils import OperationResult
 
@@ -12,23 +23,19 @@ def submit_contact_form(request):
 
     if request.method != "POST":
         result.set_error("Request method is not valid", 405)
-        return render(request, 'index.html', {'result': result})
+        return render(request, "index.html", {"result": result})
     try:
         contact_form_validate = ContactFormValidate(request.POST)
         if not contact_form_validate.is_valid():
             result.set_error("Contact form is not valid", 400)
             messages.error(request, result.message)
-            return render(request, 'index.html', {'result': result})
+            return render(request, "index.html", {"result": result})
 
-        name = contact_form_validate.cleaned_data.get('name')
-        email = contact_form_validate.cleaned_data.get('email')
-        message = contact_form_validate.cleaned_data.get('message')
+        name = contact_form_validate.cleaned_data.get("name")
+        email = contact_form_validate.cleaned_data.get("email")
+        message = contact_form_validate.cleaned_data.get("message")
 
-        Message.objects.create(
-            name=name,
-            email=email,
-            message=message
-        )
+        Message.objects.create(name=name, email=email, message=message)
 
         email_result = contact_form_validate.sends_email()
 
@@ -40,7 +47,7 @@ def submit_contact_form(request):
             messages.success(request, "Your message has been sent successfully.")
 
     except Exception as e:
-        result.set_error('An unexpected error occurred', 500)
+        result.set_error("An unexpected error occurred", 500)
         result.set_data(str(e))
         # Capture the traceback to get the line number
         # tb_str = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
@@ -56,7 +63,7 @@ def get_general_settings(parameter):
     try:
         obj = GeneralSetting.objects.get(name=parameter).parameter
     except GeneralSetting.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
@@ -64,7 +71,7 @@ def get_customer_settings(cid):
     try:
         obj = Customer.objects.get(id=cid)
     except Customer.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
@@ -72,44 +79,52 @@ def get_customer_introductions(cid):
     try:
         obj = Introductions.objects.get(cid_id=cid)
     except Introductions.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
 def get_customer_knowledges(cid, kl_type):
     try:
         if kl_type.startswith("-"):
-            obj = Knowledge.objects.filter(cid_id=cid).exclude(type=kl_type[1:]).order_by('order')
+            obj = (
+                Knowledge.objects.filter(cid_id=cid)
+                .exclude(type=kl_type[1:])
+                .order_by("order")
+            )
         elif len(kl_type) > 0:
-            obj = Knowledge.objects.filter(cid_id=cid).filter(type=kl_type).order_by('order')
+            obj = (
+                Knowledge.objects.filter(cid_id=cid)
+                .filter(type=kl_type)
+                .order_by("order")
+            )
         else:
-            obj = Knowledge.objects.filter(cid_id=cid).order_by('order')
+            obj = Knowledge.objects.filter(cid_id=cid).order_by("order")
     except Knowledge.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
 def get_customer_experience(cid):
     try:
-        obj = Experience.objects.filter(cid_id=cid).order_by('-start_date')
+        obj = Experience.objects.filter(cid_id=cid).order_by("-start_date")
     except Experience.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
 def get_customer_certification(cid):
     try:
-        obj = Certification.objects.filter(cid_id=cid).order_by('-date')
+        obj = Certification.objects.filter(cid_id=cid).order_by("-date")
     except Certification.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
 def get_customer_education(cid):
     try:
-        obj = Education.objects.filter(cid_id=cid).order_by('-start_date')
+        obj = Education.objects.filter(cid_id=cid).order_by("-start_date")
     except Certification.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
@@ -117,15 +132,15 @@ def get_customer_social_media(cid):
     try:
         obj = SocialMedia.objects.filter(cid_id=cid)
     except SocialMedia.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
 def get_customer_resume(cid):
     try:
-        obj = Document.objects.get(cid_id=cid, type='resume')
+        obj = Document.objects.get(cid_id=cid, type="resume")
     except Document.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
@@ -133,7 +148,7 @@ def get_image_settings(parameter):
     try:
         obj = ImageSetting.objects.get(name=parameter).file
     except ImageSetting.DoesNotExist:
-        obj = ''
+        obj = ""
     return obj
 
 
@@ -151,27 +166,28 @@ def prettify_value(value):
 
 
 def customer_navigate_address(adr1, city, country):
-    return f'{adr1} {city} {country}'
+    return f"{adr1} {city} {country}"
 
 
 def index(request):
     # General Settings
-    site_author = get_general_settings('site_author')
-    site_description = get_general_settings('site_description')
-    site_distribution = get_general_settings('site_distribution')
-    site_generator = get_general_settings('site_generator')
-    site_keywords = get_general_settings('site_keywords')
-    site_language = get_general_settings('site_language')
-    site_rating = get_general_settings('site_rating')
-    site_revisit_after = get_general_settings('site_revisit_after')
-    site_title = get_general_settings('site_title')
+    site_author = get_general_settings("site_author")
+    site_description = get_general_settings("site_description")
+    site_distribution = get_general_settings("site_distribution")
+    site_generator = get_general_settings("site_generator")
+    site_keywords = get_general_settings("site_keywords")
+    site_language = get_general_settings("site_language")
+    site_rating = get_general_settings("site_rating")
+    site_revisit_after = get_general_settings("site_revisit_after")
+    site_title = get_general_settings("site_title")
 
     # Customer
     customer = get_customer_settings(1)
     if customer:
         customer.phone_prettify = prettify_value(customer.phone)
         customer.address_navigate = customer_navigate_address(
-            customer.address, customer.city, customer.country)
+            customer.address, customer.city, customer.country
+        )
 
     # Introduction of Sections
     introduction = get_customer_introductions(1)
@@ -205,52 +221,40 @@ def index(request):
 
     context = {
         # General Settings
-        'site_author': site_author,
-        'site_description': site_description,
-        'site_distribution': site_distribution,
-        'site_generator': site_generator,
-        'site_keywords': site_keywords,
-        'site_language': site_language,
-        'site_rating': site_rating,
-        'site_revisit_after': site_revisit_after,
-        'site_title': site_title,
-
+        "site_author": site_author,
+        "site_description": site_description,
+        "site_distribution": site_distribution,
+        "site_generator": site_generator,
+        "site_keywords": site_keywords,
+        "site_language": site_language,
+        "site_rating": site_rating,
+        "site_revisit_after": site_revisit_after,
+        "site_title": site_title,
         # Customer
-        'customer': customer,
-
+        "customer": customer,
         # Introduction
-        'introduction': introduction,
-
+        "introduction": introduction,
         # Skill
-        'skills': skills,
-
+        "skills": skills,
         # Knowledge
-        'knowledges': knowledges,
-
+        "knowledges": knowledges,
         #  Language
-        'languages': languages,
-
+        "languages": languages,
         # Experience
-        'experiences': experiences,
-
+        "experiences": experiences,
         # Certifications
-        'certifications': certifications,
-
+        "certifications": certifications,
         # Education
-        'educations': educations,
-
+        "educations": educations,
         # Social Media
-        'social_medias': social_medias,
-
+        "social_medias": social_medias,
         # Resume
-        'resume': resume,
-
+        "resume": resume,
         # Contact Form Validate
-        'contact_form_validate': contact_form_validate,
-
+        "contact_form_validate": contact_form_validate,
         # Image Settings
     }
-    return render(request, 'index.html', context=context)
+    return render(request, "index.html", context=context)
 
 
 def redirect_url(request, slug_parameter):
