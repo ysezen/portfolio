@@ -42,6 +42,6 @@ services:
 volumes:
   postgresql-data:
     external: true
-    name: postgresql-data
+    name: portfolio_postgresql-data
   static-data:
 
